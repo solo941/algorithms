@@ -50,4 +50,20 @@ private void swap(int[] nums, int i, int j) {
 }
 ```
 
-但这种方法存在局限性，原地操作，会改变输入数组。
+但这种方法存在局限性，原地操作，会改变输入数组。在海量数据场景，一次加载所有数据到内存是不可能的。这时候从辅助空间（磁盘）中读数，需要使用容器保持最小的k个数，并与读的数进行比较。这个容器我们可以通过堆来实现，java中常用的大根堆与小根堆的实现方式是`PriorityQueue`。本题使用大根堆，每次添加至容器时，最大的元素出队列。
+
+```java
+public ArrayList<Integer> GetLeastNumbers_Solution(int[] nums, int k) {
+    if (k > nums.length || k <= 0)
+        return new ArrayList<>();
+    PriorityQueue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+    for (int num : nums) {
+        maxHeap.add(num);
+        if (maxHeap.size() > k)
+            maxHeap.poll();
+    }
+    return new ArrayList<>(maxHeap);
+}
+```
+
+堆是基于二叉树的实现，因此时间复杂度为`O(nlogk)`。
