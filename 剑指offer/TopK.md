@@ -113,3 +113,40 @@ public class Solution {
 
 插入时要判断存在的元素个数，如果偶数，默认插入最小堆。但直接插入不能保证堆顶元素一定大于等于最大堆堆顶元素，因此过程为插入最大堆->移动堆顶元素到最小堆。
 
+##  数字序列中的某一位数字
+
+题目描述：数字以 0123456789101112131415... 的格式序列化到一个字符串中，求这个字符串的第 index 位。
+
+解题思路：这道题的思路很简单，个位数按大小排完，如果没到index位，就排十位数。以此类推。但需要把逻辑理清楚，首先个位数和百位千位的各数计算公式不同；其次要注意处理数据流的顺序：先找到第一个数，再看index所在的数，最后确定数字。
+
+```java
+public int findIndex(int index){
+        if(index < 0) return -1;
+        int place = 1;
+        while (true){
+            int totalAmount = calTotalAmount(place);
+            if(index < totalAmount)
+                return findCurrentIndex(index, place);
+            index -= totalAmount;
+            place++;
+        }
+    }
+
+    private int findCurrentIndex(int index, int place) {
+        int firstNum = findFirstNum(place);
+        String num = (firstNum + index / place) + "";
+        return num.charAt(index % place) - '0';
+    }
+
+    private int findFirstNum(int place) {
+        if (place == 1) return 0;
+        return (int)Math.pow(10,place - 1);
+    }
+
+    private int calTotalAmount(int place) {
+        if (place == 1) return 10;
+        return (int)Math.pow(10,place - 1) * 9 *place;
+    }
+```
+
+这道题不难，没有特别的操作，但是考察问题理解能力，和Int,double,char,string类型之间的转换。
